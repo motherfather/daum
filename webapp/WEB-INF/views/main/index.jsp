@@ -37,31 +37,6 @@
 	type="image/x-icon">
 <link rel="icon" href="assets/images/favicon.ico" type="image/x-icon">
 <link rel="stylesheet" href="assets/style.css?ver=1">
-<script>
-$(function() {
-	$(document).on("click", "#gw", function() {
-		event.preventDefault();
-		console.log("!!!");
-		
-		var name =$("#gna").val();
-		var password =$("#gpw").val();
-		var content =$("#gct").val();
-		
-		$.ajax({
-			type:"POST",
-			url:"${pageContext.request.contextPath }/guestbook/write",
-			dateType:"json",
-			data:"name=" + name + "&password=" + password + "&content=" + content,
-			success:function(data){
-				$("#write")[0].reset();	
-			},
-			error:function(jqXHR, status, e){
-				alert(status + ":" + e);
-			}
-		});
-	});
-})
-</script>
 </head>
 <body>
 
@@ -252,23 +227,24 @@ $(function() {
 		</ul>
 		<div class="tab-content">
 			<div id="list" class="tab-pane fade in active">
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-					do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+				<p>방명록리스트</p>
 			</div>
+			<!-- 방명록 작성 -->
 			<div id="write" class="tab-pane fade">
-				<!-- 방명록 작성 -->
-					<div class="container contactform center">
-						<h2 class="text-center  wowload fadeInUp">방명록 작성</h2>
-						<div class="row wowload fadeInLeftBig">
-							<div class="col-sm-6 col-sm-offset-3 col-xs-12">
-								<input type="text" placeholder="이름" id="gna">
-								<input type="password" placeholder="비밀번호" id="gpw">
-								<textarea rows="5" placeholder="내용" id="gct"></textarea>
-								<button class="btn btn-primary" id="gw">작성</button>
-							</div>
+				<div class="container contactform center">
+					<h2 class="text-center  wowload fadeInUp">방명록 작성</h2>
+					<div class="row wowload fadeInLeftBig">
+						<div class="col-sm-6 col-sm-offset-3 col-xs-12">
+							<input type="text" placeholder="이름" id="name">
+							<input type="password" placeholder="비밀번호" id="password">
+							<textarea rows="5" placeholder="내용" id="content"></textarea>
+							<button type="button" class="btn btn-primary" id="submit">작성</button>
+							<!-- <a id="naver" href="http://www.naver.com">네이버</a> -->
 						</div>
 					</div>
+				</div>
 			</div>
+			
 		</div>
 	</div>
 
@@ -438,9 +414,26 @@ $(function() {
 		<!-- The modal dialog, which will be used to wrap the lightbox content -->
 	</div>
 
-
 	<!-- jquery -->
 	<script src="assets/jquery.js"></script>
+	
+	<script>
+	$(function() {
+		$("button").click(function() {
+			alert("!!!");
+		});
+	})
+	<!-- 이동방지 연습용 -->
+	
+	<!-- $('button').click(function(){
+		alert("!!");
+		event.preventDefault();
+	}).prop('onclick', null); -->
+	
+	<!-- $('#naver').bind('click', false); -->
+	<!-- $("#naver").click(function() {	return false; }); -->	
+	
+	</script>
 
 	<!-- wow script -->
 	<script src="assets/wow/wow.min.js"></script>
@@ -456,7 +449,7 @@ $(function() {
 	<script src="assets/gallery/jquery.blueimp-gallery.min.js"></script>
 
 	<!-- custom script -->
-	<script src="assets/script.js?ver=1" />
+	<script src="assets/script.js" />
 
 </body>
 </html>

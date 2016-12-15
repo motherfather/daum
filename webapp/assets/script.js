@@ -1,13 +1,5 @@
  jQuery(document).ready(function($) {
  
-/* 내가 추가한 js*/
-	 
-	 /*$("#gw").prop("disabled", false);*/
-	 $('#gw').bind('click', true);
-	 
-	 
-	 
-	 
 	 
     $(".scroll a, .navbar-brand, .gototop").click(function(event){   
     event.preventDefault();
