@@ -4,7 +4,7 @@
 <mapper namespace="guestbook">
 	<insert id="write" parameterType="guestbookvo">
 		<![CDATA[
-			insert into guestbook values(guestbook_seq.nextval, #{name }, #{password }, #{content })
+			insert into guestbook values(guestbook_seq.nextval, #{writer }, #{password }, #{content })
 		]]>
 	</insert>
 </mapper>

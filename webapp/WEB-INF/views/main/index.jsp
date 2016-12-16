@@ -182,40 +182,6 @@
 				</p>
 			</figcaption>
 		</figure>
-		<figure class="effect-oscar  wowload fadeInUp">
-			<img src="assets/images/portfolio/10.jpg" alt="img01" />
-			<figcaption>
-				<h2>cameras</h2>
-				<p>
-					Lily likes to play with crayons and pencils<br> <a
-						href="assets/images/portfolio/10.jpg" title="1" data-gallery>View
-						more</a>
-				</p>
-			</figcaption>
-		</figure>
-		<figure class="effect-oscar  wowload fadeInUp">
-			<img src="assets/images/portfolio/11.jpg" alt="img01" />
-			<figcaption>
-				<h2>design</h2>
-				<p>
-					Lily likes to play with crayons and pencils<br> <a
-						href="assets/images/portfolio/11.jpg" title="1" data-gallery>View
-						more</a>
-				</p>
-			</figcaption>
-		</figure>
-		<figure class="effect-oscar  wowload fadeInUp">
-			<img src="assets/images/portfolio/12.jpg" alt="img01" />
-			<figcaption>
-				<h2>studio</h2>
-				<p>
-					Lily likes to play with crayons and pencils<br> <a
-						href="assets/images/portfolio/12.jpg" title="1" data-gallery>View
-						more</a>
-				</p>
-			</figcaption>
-		</figure>
-
 	</div>
 	<!-- works -->
 
@@ -238,12 +204,19 @@
 							<input type="text" placeholder="이름" id="name">
 							<input type="password" placeholder="비밀번호" id="password">
 							<textarea rows="5" placeholder="내용" id="content"></textarea>
-							<button type="button" class="btn btn-primary" id="submit">작성</button>
-							<!-- <a id="naver" href="http://www.naver.com">네이버</a> -->
+							<button type="submit" class="btn btn-primary" id="submit">작성</button>
 						</div>
 					</div>
 				</div>
 			</div>
+			
+			<!-- form형식 -->
+			<form id="add-form" action="" method="post">
+				<input type="text" id="input-name" placeholder="이름">
+				<input type="password" id="input-password" placeholder="비밀번호">
+				<textarea id="input-content" placeholder="내용을 입력해 주세요."></textarea>
+				<input type="submit" value="보내기" />
+			</form>
 			
 		</div>
 	</div>
@@ -419,20 +392,44 @@
 	
 	<script>
 	$(function() {
-		$("button").click(function() {
+		$("button").submit(function() {
 			alert("!!!");
+			var writer = $("#name").val();
+			console.log(writer);
 		});
+	
+		// 등록
+		$( "#add-form" ).submit( function( event ) {
+			event.preventDefault();
+		var name = $("#input-name").val();
+		var pass = $("#input-password").val();
+		var con = $("#input-content").val();
+			$.ajax({
+				url: "${pageContext.request.contextPath }/guestbook/write",
+				type: "post",
+				dataType: "json",
+				data: "writer=" + name + 
+					  "&password=" + pass + 
+					  "&content=" + con,
+			success: function( response ) { 
+					if( response.result != "success" ) {
+						console.error( response.message );
+						return;
+					}
+			console.log($("#input-name").val());
+			console.log($("#input-password").val());
+			console.log($("#input-content").val());
+					// 폼지우기
+					$( "#add-form" )[0].reset();
+				},
+				error: function( jqXHR, status, e ) {
+					console.error( status + ":" + e );
+					$( "#add-form" )[0].reset();
+				}
+			});
+		});
+	
 	})
-	<!-- 이동방지 연습용 -->
-	
-	<!-- $('button').click(function(){
-		alert("!!");
-		event.preventDefault();
-	}).prop('onclick', null); -->
-	
-	<!-- $('#naver').bind('click', false); -->
-	<!-- $("#naver").click(function() {	return false; }); -->	
-	
 	</script>
 
 	<!-- wow script -->
