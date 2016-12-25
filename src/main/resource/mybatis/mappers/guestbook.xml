@@ -3,8 +3,23 @@
 
 <mapper namespace="guestbook">
 	<insert id="write" parameterType="guestbookvo">
+		<selectKey keyProperty="no" resultType="long" order="BEFORE">
+			select guestbook_seq.nextval from dual
+		</selectKey>
 		<![CDATA[
-			insert into guestbook values(guestbook_seq.nextval, #{writer }, #{password }, #{content })
+			insert into guestbook values(#{no }, #{writer }, #{password }, #{content })
 		]]>
 	</insert>
+	
+	<select id="get" parameterType="long" resultType="guestbookvo">
+		<![CDATA[
+			select * from guestbook where no = #{no }
+		]]>
+	</select>
+	
+	<select id="list" resultType="guestbookvo">
+		<![CDATA[
+			select * from guestbook order by no asc
+		]]>
+	</select>
 </mapper>

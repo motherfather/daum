@@ -143,9 +143,9 @@
 		<figure class="effect-oscar  wowload fadeInUp">
 			<img src="assets/images/portfolio/6.jpg" alt="img01" />
 			<figcaption>
-				<h2>방명록</h2>
+				<h2>Guestbook</h2>
 				<p>
-					<br> <a href="#guestbook">방명록 가기</a>
+					<br> <a href="#guestbook">View guestbook</a>
 				</p>
 			</figcaption>
 		</figure>
@@ -193,15 +193,22 @@
 		</ul>
 		<div class="tab-content">
 			<div id="list" class="tab-pane fade in active">
-				<p>방명록리스트</p>
+				<p></p>
+				<!-- 방명록 작성 (기존 form형식) -->
+				<form id="add-form" action="" method="post" class="col-sm-6 col-sm-offset-3 col-xs-12">
+					<input type="text" id="input-name" placeholder="이름">
+					<input type="password" id="input-password" placeholder="비밀번호">
+					<textarea id="input-content" placeholder="내용을 입력해 주세요."></textarea>
+					<input type="submit" value="보내기" />
+				</form>
 			</div>
-			<!-- 방명록 작성 -->
 			<div id="write" class="tab-pane fade">
 				<div class="container contactform center">
+					<!-- 방명록 작성 (button형식)-->
 					<h2 class="text-center  wowload fadeInUp">방명록 작성</h2>
 					<div class="row wowload fadeInLeftBig">
 						<div class="col-sm-6 col-sm-offset-3 col-xs-12">
-							<input type="text" placeholder="이름" id="name">
+							<input type="text" placeholder="이름" id="writer">
 							<input type="password" placeholder="비밀번호" id="password">
 							<textarea rows="5" placeholder="내용" id="content"></textarea>
 							<button type="submit" class="btn btn-primary" id="submit">작성</button>
@@ -209,18 +216,105 @@
 					</div>
 				</div>
 			</div>
-			
-			<!-- form형식 -->
-			<form id="add-form" action="" method="post">
-				<input type="text" id="input-name" placeholder="이름">
-				<input type="password" id="input-password" placeholder="비밀번호">
-				<textarea id="input-content" placeholder="내용을 입력해 주세요."></textarea>
-				<input type="submit" value="보내기" />
-			</form>
-			
 		</div>
 	</div>
-
+	
+<!-- jquery -->
+	<script src="assets/jquery.js"></script>
+	
+	<script>
+	// 방명록 목록 불러오기
+	// 메서드 선언
+	var list = function() {
+		$.ajax({
+			url:"${pageContext.request.contextPath }/guestbook", // 방명록 목록 받아올 주소
+			type:"post",
+			dataType:"json",
+			data:"", // 받아오기만 하므로 data는 필요없다
+			success:function(ff) { // 성공시
+				if(ff.result != "success") {
+					console.error(ff.message);
+					return;
+				}
+				$(ff.data).each(function() { // 참고사이트 http://annotations.tistory.com/59
+					console.log(this); // this는 ff.data!!
+					$("#list").prepend(
+					"<li id='gb-" + this.no + "'>" +
+					"<strong>" + this.writer + "</strong>" +
+					"<p>" + this.content + "</p>" +
+					"</li>"); 
+				}) 
+			},
+			error:function(jqXHR, status, e) {
+				console.error(status + ":::" + e)
+			}
+		})
+	};
+	
+	$(function() { // 페이지가 실행될 때 같이 실행? 되는것
+		// 등록 (form 안쓰는 형식/바로갱신가능)
+		$("#submit").click(function() {
+			event.preventDefault();
+			var writer = $("#writer").val();
+			var password = $("#password").val();
+			var content = $("#content").val();
+			
+			$.ajax({
+				url:"${pageContext.request.contextPath }/guestbook/write",
+				type:"post",
+				dataType:"json",
+				data: "writer=" + writer + 
+				  "&password=" + password + 
+				  "&content=" + content,
+				success:function(data) {
+					$("#writer").val("");
+					$("#password").val("");
+					$("#content").val("");
+					$("#list").prepend( // 쓰자마자 바로 갱신하기 위한 방법
+					"<li id='gb-" + data.data.no + "'>" +
+					"<strong>" + data.data.writer + "</strong>" +
+					"<p>" + data.data.content.replace( /\n/gi, "<br>") + "</p>" +
+					"</li>");
+				},
+				error: function( jqXHR, status, e ) {
+					console.error( status + ":" + e );
+					$("#writer").val("");
+					$("#password").val("");
+					$("#content").val("");
+				}
+			});
+		});
+	
+		// 등록 (form 쓰는 형식/바로갱신안됨)
+		$( "#add-form" ).submit( function( event ) {
+			event.preventDefault();
+		var name = $("#input-name").val();
+		var pass = $("#input-password").val();
+		var con = $("#input-content").val();
+			$.ajax({
+				url: "${pageContext.request.contextPath }/guestbook/write",
+				type: "post",
+				dataType: "json",
+				data: "writer=" + name + 
+					  "&password=" + pass + 
+					  "&content=" + con,
+			success: function( response ) { 
+					if( response.result != "success" ) {
+						console.error( response.message );
+						return;
+					}
+					// 폼지우기
+					$( "#add-form" )[0].reset();
+				},
+				error: function( jqXHR, status, e ) {
+					console.error( status + ":" + e );
+					$( "#add-form" )[0].reset();
+				}
+			});
+		});
+		list(); // 방명록 목록 메서스 실행
+	})
+	</script>
 
 	<div id="partners" class="container spacer ">
 		<h2 class="text-center  wowload fadeInUp">Some of our happy
@@ -386,51 +480,6 @@
 		<a class="prev">‹</a> <a class="next">›</a> <a class="close">×</a>
 		<!-- The modal dialog, which will be used to wrap the lightbox content -->
 	</div>
-
-	<!-- jquery -->
-	<script src="assets/jquery.js"></script>
-	
-	<script>
-	$(function() {
-		$("button").submit(function() {
-			alert("!!!");
-			var writer = $("#name").val();
-			console.log(writer);
-		});
-	
-		// 등록
-		$( "#add-form" ).submit( function( event ) {
-			event.preventDefault();
-		var name = $("#input-name").val();
-		var pass = $("#input-password").val();
-		var con = $("#input-content").val();
-			$.ajax({
-				url: "${pageContext.request.contextPath }/guestbook/write",
-				type: "post",
-				dataType: "json",
-				data: "writer=" + name + 
-					  "&password=" + pass + 
-					  "&content=" + con,
-			success: function( response ) { 
-					if( response.result != "success" ) {
-						console.error( response.message );
-						return;
-					}
-			console.log($("#input-name").val());
-			console.log($("#input-password").val());
-			console.log($("#input-content").val());
-					// 폼지우기
-					$( "#add-form" )[0].reset();
-				},
-				error: function( jqXHR, status, e ) {
-					console.error( status + ":" + e );
-					$( "#add-form" )[0].reset();
-				}
-			});
-		});
-	
-	})
-	</script>
 
 	<!-- wow script -->
 	<script src="assets/wow/wow.min.js"></script>

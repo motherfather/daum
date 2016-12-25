@@ -1,5 +1,7 @@
 package com.ff.daum.service;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,8 +14,13 @@ public class GuestbookService {
 	@Autowired
 	private GuestbookDao guestbookDao;
 	
-	public void write(GuestbookVo vo) {
-		guestbookDao.write(vo);
+	public GuestbookVo write(GuestbookVo vo) {
+		Long no = guestbookDao.write(vo);
+		return guestbookDao.get(no);
+	}
+	
+	public List<GuestbookVo> list() {
+		return guestbookDao.list();
 	}
 
 }
